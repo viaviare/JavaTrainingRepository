@@ -1,7 +1,11 @@
 package ru.stqa.pft.addbook.appmanager;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import ru.stqa.pft.addbook.model.GroupData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GroupHelper extends HelperBase{
 
@@ -62,8 +66,25 @@ public class GroupHelper extends HelperBase{
 
 
   public void checkOneGroupExists(GroupData group) {
+    manager.getNavigatorH().gotoGroupPage();
     if(! isElementPresent(By.cssSelector("input[name='selected[]']"))) {
       create(group);
     }
+  }
+
+  public int countGroups() {
+    manager.getNavigatorH().gotoGroupPage();
+    return driver.findElements(By.name("selected[]")).size();
+  }
+
+  public List<GroupData> getGroupList() {
+    manager.getNavigatorH().gotoGroupPage();
+    List<GroupData> groups = new ArrayList<>();
+    List<WebElement> elements = driver.findElements(By.className("group"));
+    for(WebElement item : elements){
+      String id = item.findElement(By.tagName("input")).getAttribute("value");
+      groups.add(new GroupData(id, item.getText(),null, null));
+    }
+    return groups;
   }
 }
