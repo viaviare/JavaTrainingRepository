@@ -82,7 +82,7 @@ public class GroupHelper extends HelperBase{
     List<GroupData> groups = new ArrayList<>();
     List<WebElement> elements = driver.findElements(By.className("group"));
     for(WebElement item : elements){
-      String id = item.findElement(By.tagName("input")).getAttribute("value");
+      int id = Integer.parseInt(item.findElement(By.tagName("input")).getAttribute("value"));
       groups.add(new GroupData(id, item.getText(),null, null));
     }
     return groups;

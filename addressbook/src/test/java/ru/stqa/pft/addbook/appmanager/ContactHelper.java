@@ -6,6 +6,9 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import ru.stqa.pft.addbook.model.ContactData;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ContactHelper extends HelperBase {
 
   public ContactHelper(ApplicationManager manager) {super(manager);}
@@ -65,8 +68,25 @@ public class ContactHelper extends HelperBase {
   private void editContactItem(int index) {click(By.xpath("//tr[@name='entry'][" + (index+1) + "]/td[8]"));}
 
   public void checkOneContactExists(ContactData contact, boolean creation) {
+    manager.getNavigatorH().gotoHomePage();
     if(! isElementPresent(By.cssSelector("input[name='selected[]']"))){
       create(contact, true);
     }
+  }
+
+  public int countContact() {
+    return driver.findElements(By.name("entry")).size();
+  }
+
+  public List<ContactData> getContactList() {
+    List<ContactData> contacts = new ArrayList<>();
+    List<WebElement> elements = driver.findElements(By.name("entry"));
+    for (WebElement item : elements) {
+      String lastName = item.findElement(By.xpath("./td[2]")).getText();
+      String firstName = item.findElement(By.xpath("./td[3]")).getText();
+      int id = Integer.parseInt(item.findElement(By.tagName("input")).getAttribute("value"));
+      contacts.add(new ContactData(id, lastName, firstName ));
+    }
+    return contacts;
   }
 }
