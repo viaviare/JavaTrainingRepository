@@ -17,7 +17,6 @@ public class ContactModificationTests extends TestBaseAuth {
 
     app.getContactH().checkOneContactExists(tempContact, true);
 
-    int beforeCount = app.getContactH().countContact();
     ContSet before = app.getContactH().getContactSetList();
 
     ContactData modifiedContact = before.iterator().next();
@@ -25,9 +24,10 @@ public class ContactModificationTests extends TestBaseAuth {
     app.getContactH().modify(contact, modifiedContact, false);
 
     int afterCount = app.getContactH().countContact();
+    assertThat(afterCount, equalTo(before.size()));
+
     ContSet after = app.getContactH().getContactSetList();
 
-    assertThat(afterCount, equalTo(beforeCount));
     assertThat(after, equalTo(before.change(modifiedContact, contact.setId(modifiedContact.getId()))));
 
   }

@@ -68,9 +68,9 @@ public class GroupHelper extends HelperBase{
   public void selectGroupItem(int index) {
     click(By.xpath("(//input[@name='selected[]'])[" + (index + 1) + "]"));
   }
-  public void selectGroupIdItem(int id) {
-    click(By.xpath("//input[@name='selected[]' and @value = '" + id + "']"));
 
+  public void selectGroupIdItem(int id) {
+    click(By.xpath(String.format("//input[@name='selected[]' and @value = '%s']", id)));
   }
 
   public void deleteGroup() {

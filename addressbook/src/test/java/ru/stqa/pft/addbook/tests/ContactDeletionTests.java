@@ -6,6 +6,9 @@ import org.testng.annotations.Test;
 import ru.stqa.pft.addbook.model.ContSet;
 import ru.stqa.pft.addbook.model.ContactData;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 public class ContactDeletionTests extends TestBaseAuth {
 
   @Test
@@ -15,7 +18,6 @@ public class ContactDeletionTests extends TestBaseAuth {
 
     app.getContactH().checkOneContactExists(contact, true);
 
-    int beforeCount = app.getContactH().countContact();
     ContSet before = app.getContactH().getContactSetList();
 
     ContactData deletedContact = before.iterator().next();
@@ -23,10 +25,11 @@ public class ContactDeletionTests extends TestBaseAuth {
     app.getContactH().remove(deletedContact);
 
     int afterCount = app.getContactH().countContact();
+    assertThat(afterCount, equalTo(before.size()-1));
+
     ContSet after = app.getContactH().getContactSetList();
 
-    MatcherAssert.assertThat(afterCount, CoreMatchers.equalTo(beforeCount-1));
-    MatcherAssert.assertThat(after, CoreMatchers.equalTo(before.without(deletedContact)));
+    assertThat(after, equalTo(before.without(deletedContact)));
 
   }
 }

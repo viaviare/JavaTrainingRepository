@@ -15,15 +15,15 @@ public class ContactCreationTests extends TestBaseAuth {
   public void testContactCreation(){
     ContactData contact = new ContactData().setLastName("kjh").setFirstName("iop").setNewGroup("z");
 
-    int beforeCount = app.getContactH().countContact();
     ContSet before = app.getContactH().getContactSetList();
 
     app.getContactH().create(contact, true);
 
     int afterCount = app.getContactH().countContact();
+    assertThat(afterCount,equalTo(before.size()+1));
+
     ContSet after = app.getContactH().getContactSetList();
 
-    assertThat(afterCount,equalTo(beforeCount+1));
     assertThat(after,equalTo(before.withAdded(contact.setId
             (after.stream().max(Comparator.comparingInt(ContactData::getId)).get().getId()))));
   }

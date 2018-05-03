@@ -7,16 +7,15 @@ import org.testng.Assert;
 import ru.stqa.pft.addbook.model.ContSet;
 import ru.stqa.pft.addbook.model.ContactData;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ContactHelper extends HelperBase {
 
-  public ContactHelper(ApplicationManager manager) {super(manager);}
+  public ContactHelper(ApplicationManager manager) {
+    super(manager);
+  }
 
-  public void create(ContactData contact, boolean creation){
+  public void create(ContactData contact, boolean creation) {
     manager.getNavigatorH().gotoHomePage();
     initNewContact();
     fillContactFields(contact, creation);
@@ -24,7 +23,7 @@ public class ContactHelper extends HelperBase {
     returnHomePage();
   }
 
-  public void modify(ContactData contact, ContactData modifiedContact, boolean creation){
+  public void modify(ContactData contact, ContactData modifiedContact, boolean creation) {
     manager.getNavigatorH().gotoHomePage();
     selectContactIdItem(modifiedContact.getId());
     editContactIdItem(modifiedContact.getId());
@@ -40,16 +39,21 @@ public class ContactHelper extends HelperBase {
     manager.getNavigatorH().gotoHomePage();
   }
 
+  private ContSet contSetCache;
+
   public ContSet getContactSetList() {
-    ContSet contacts = new ContSet();
-    List<WebElement> elements = driver.findElements(By.name("entry"));
-    for (WebElement item : elements) {
-      String lastName = item.findElement(By.xpath("./td[2]")).getText();
-      String firstName = item.findElement(By.xpath("./td[3]")).getText();
-      int id = Integer.parseInt(item.findElement(By.tagName("input")).getAttribute("value"));
-      contacts.add(new ContactData(id, lastName, firstName ));
+    if (contSetCache != null) {
+      return new ContSet(contSetCache);
     }
-    return contacts;
+      ContSet contSetCache = new ContSet();
+      List<WebElement> elements = driver.findElements(By.name("entry"));
+      for (WebElement item : elements) {
+        String lastName = item.findElement(By.xpath("./td[2]")).getText();
+        String firstName = item.findElement(By.xpath("./td[3]")).getText();
+        int id = Integer.parseInt(item.findElement(By.tagName("input")).getAttribute("value"));
+        contSetCache.add(new ContactData(id, lastName, firstName));
+      }
+      return new ContSet(contSetCache);
   }
 
   public void fillContactFields(ContactData contactData, boolean creation) {
@@ -57,40 +61,47 @@ public class ContactHelper extends HelperBase {
     type(By.cssSelector("input[name='firstname']"), contactData.getFirstName());
     if (creation) {
       new Select(driver.findElement(By.name("new_group"))).selectByVisibleText(contactData.getNewGroup());
-    } else{
+    } else {
       Assert.assertFalse(isElementPresent(By.name("new_group")));
     }
   }
 
-  public void initNewContact() { click(By.linkText("add new"));  }
+  public void initNewContact() {
+    click(By.linkText("add new"));
+  }
 
-  public void submitContactData() { click(By.cssSelector("input[name='submit']"));}
+  public void submitContactData() {
+    click(By.cssSelector("input[name='submit']"));
+    contSetCache = null;
+  }
 
-  public void updateContactData() { click(By.cssSelector("input[name='update']"));}
-
-  public void returnHomePage() { click(By.linkText("home page"));  }
+  public void updateContactData() {
+    click(By.cssSelector("input[name='update']"));
+    contSetCache = null;
+  }
 
   private void deleteContactItem() {
     click(By.cssSelector("input[value='Delete']"));
     driver.switchTo().alert().accept();
+    contSetCache = null;
   }
 
-  private void selectContactItem(int index) {click(By.xpath("(//input[@name='selected[]'])[" + (index+1) + "]"));}
+
+  public void returnHomePage() {
+    click(By.linkText("home page"));
+  }
 
   private void selectContactIdItem(int id) {
-    click(By.xpath("//input[@name='selected[]' and @value =" + (id) + "]"));
+    click(By.xpath(String.format("//input[@name='selected[]' and @value ='%s']", id)));
   }
-
-  private void editContactItem(int index) {click(By.xpath("//tr[@name='entry'][" + (index+1) + "]/td[8]"));}
 
   private void editContactIdItem(int id) {
-    click(By.xpath("//input[@name='selected[]' and @value =" + (id) + "]/ancestor::tr/td[8]"));
+    click(By.xpath("//input[@name='selected[]' and @value =" + (id) + "]/ancestor::tr/td[8]/a"));
   }
-
 
   public void checkOneContactExists(ContactData contact, boolean creation) {
     manager.getNavigatorH().gotoHomePage();
-    if(! isElementPresent(By.cssSelector("input[name='selected[]']"))){
+    if (!isElementPresent(By.cssSelector("input[name='selected[]']"))) {
       create(contact, true);
     }
   }
