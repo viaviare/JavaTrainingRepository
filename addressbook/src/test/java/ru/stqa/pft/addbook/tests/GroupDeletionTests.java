@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 import ru.stqa.pft.addbook.model.GroupData;
 
 import java.util.List;
+import java.util.Set;
 
 public class GroupDeletionTests extends TestBaseAuth {
 
@@ -12,16 +13,18 @@ public class GroupDeletionTests extends TestBaseAuth {
   public void testDeletionGroup () {
 
     GroupData group = new GroupData("xx","zz", "ll");
-    int index = 0;
     app.getGroupH().checkOneGroupExists(group);
 
     int countBefore = app.getGroupH().countGroups();
-    List<GroupData> before = app.getGroupH().getGroupList();
+    Set<GroupData> before = app.getGroupH().getGroupSet();
 
-    app.getGroupH().remove(index);
+    GroupData deletedGroup = before.iterator().next();
+    app.getGroupH().remove(deletedGroup);
+
     int countAfter = app.getGroupH().countGroups();
-    List<GroupData> after = app.getGroupH().getGroupList();
-    before.remove(index);
+    Set<GroupData> after = app.getGroupH().getGroupSet();
+
+    before.remove(deletedGroup);
 
     Assert.assertEquals(countAfter, countBefore-1);
     Assert.assertEquals(before, after);

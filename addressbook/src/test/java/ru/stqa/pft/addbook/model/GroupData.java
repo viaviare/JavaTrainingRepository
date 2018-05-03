@@ -9,9 +9,12 @@ public class GroupData {
   private String header;
   private String footer;
   private int id;
+  private boolean ewe;
+
+
+  public GroupData(){}
 
   public GroupData (String name, String header, String footer) {
-    //this.id = 0;  this.id = null;
     this.name = name;
     this.header = header;
     this.footer = footer;
@@ -27,8 +30,9 @@ public class GroupData {
   public String getName() {
     return name;
   }
-  public void setName(String name) {
+  public GroupData setName(String name) {
     this.name = name;
+    return this;
   }
 
   public String getHeader() {
@@ -46,9 +50,10 @@ public class GroupData {
   }
 
   public int getId() {return id;}
-  public void setId(int id) {  this.id = id;  }
-
-
+  public GroupData setId(int id) {
+    this.id = id;
+    return this;
+  }
 
 
 
@@ -76,5 +81,10 @@ public class GroupData {
     int result = name != null ? name.hashCode() : 0;
     result = 31 * result + id;
     return result;
+  }
+
+
+  public boolean isEwe() {
+    return ewe;
   }
 }

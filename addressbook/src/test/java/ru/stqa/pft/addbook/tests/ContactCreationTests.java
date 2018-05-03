@@ -1,35 +1,30 @@
 package ru.stqa.pft.addbook.tests;
 
-        import org.openqa.selenium.By;
-        import org.testng.Assert;
-        import org.testng.annotations.Test;
-        import ru.stqa.pft.addbook.appmanager.ContactHelper;
-        import ru.stqa.pft.addbook.model.ContactData;
+import org.testng.annotations.Test;
+import ru.stqa.pft.addbook.model.ContSet;
+import ru.stqa.pft.addbook.model.ContactData;
 
-        import java.util.Comparator;
-        import java.util.List;
+import java.util.Comparator;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ContactCreationTests extends TestBaseAuth {
 
   @Test
   public void testContactCreation(){
-    ContactData contact = new ContactData("ppp", "uuu", "z");
+    ContactData contact = new ContactData().setLastName("kjh").setFirstName("iop").setNewGroup("z");
 
     int beforeCount = app.getContactH().countContact();
-    List<ContactData> before = app.getContactH().getContactList();
+    ContSet before = app.getContactH().getContactSetList();
 
     app.getContactH().create(contact, true);
 
     int afterCount = app.getContactH().countContact();
-    List<ContactData> after = app.getContactH().getContactList();
+    ContSet after = app.getContactH().getContactSetList();
 
-    int highId = after.stream().max(Comparator.comparingInt(ContactData::getId)).get().getId();
-    before.add(new ContactData(highId, contact.getLastName(),contact.getFirstName()));
-
-    before.sort(Comparator.comparing(ContactData::getId));
-    after.sort(Comparator.comparing(ContactData::getId));
-
-    Assert.assertEquals(afterCount, beforeCount+1);
-    Assert.assertEquals(after, before);
+    assertThat(afterCount,equalTo(beforeCount+1));
+    assertThat(after,equalTo(before.withAdded(contact.setId
+            (after.stream().max(Comparator.comparingInt(ContactData::getId)).get().getId()))));
   }
 }

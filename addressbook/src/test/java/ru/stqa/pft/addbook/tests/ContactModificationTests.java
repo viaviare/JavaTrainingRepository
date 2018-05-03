@@ -1,41 +1,35 @@
 package ru.stqa.pft.addbook.tests;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
+import ru.stqa.pft.addbook.model.ContSet;
 import ru.stqa.pft.addbook.model.ContactData;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ContactModificationTests extends TestBaseAuth {
 
   @Test
   public void testContactModification(){
-    ContactData contact = new ContactData("xx", "ww", null);
-    ContactData tempContact = new ContactData("mm", "nn", "z");
+    ContactData contact = new ContactData().setLastName("vcx").setFirstName("mnb");
+    ContactData tempContact = new ContactData().setLastName("mm").setFirstName("nn").setNewGroup("z");
     int index = 0;
 
     app.getContactH().checkOneContactExists(tempContact, true);
 
     int beforeCount = app.getContactH().countContact();
-    List<ContactData> before = app.getContactH().getContactList();
+    ContSet before = app.getContactH().getContactSetList();
 
-    app.getContactH().modify(contact, index, false);
+    ContactData modifiedContact = before.iterator().next();
+
+    app.getContactH().modify(contact, modifiedContact, false);
 
     int afterCount = app.getContactH().countContact();
-    List<ContactData> after = app.getContactH().getContactList();
+    ContSet after = app.getContactH().getContactSetList();
 
-    int id = before.get(index).getId();
-    ContactData contactId  = new ContactData(id, contact.getLastName(),contact.getFirstName());
-    before.remove(index);
-    before.add(contactId);
+    assertThat(afterCount, equalTo(beforeCount));
+    assertThat(after, equalTo(before.change(modifiedContact, contact.setId(modifiedContact.getId()))));
 
-    before.sort(Comparator.comparing(ContactData::getId));
-    after.sort(Comparator.comparing(ContactData::getId));
-
-    Assert.assertEquals(afterCount, beforeCount);
-    Assert.assertEquals(after, before);
   }
 
 }

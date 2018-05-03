@@ -5,7 +5,9 @@ import org.openqa.selenium.WebElement;
 import ru.stqa.pft.addbook.model.GroupData;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GroupHelper extends HelperBase{
 
@@ -35,6 +37,13 @@ public class GroupHelper extends HelperBase{
     returnToGroupPage();
   }
 
+  public void remove(GroupData group) {
+    manager.getNavigatorH().gotoGroupPage();
+    selectGroupIdItem(group.getId());
+    deleteGroup();
+    returnToGroupPage();
+  }
+
 
   public void initNewGroupItem() { click(By.cssSelector("input[name='new']"));  }
 
@@ -59,6 +68,10 @@ public class GroupHelper extends HelperBase{
   public void selectGroupItem(int index) {
     click(By.xpath("(//input[@name='selected[]'])[" + (index + 1) + "]"));
   }
+  public void selectGroupIdItem(int id) {
+    click(By.xpath("//input[@name='selected[]' and @value = '" + id + "']"));
+
+  }
 
   public void deleteGroup() {
     click(By.cssSelector("input[name='delete']"));
@@ -70,6 +83,13 @@ public class GroupHelper extends HelperBase{
     if(! isElementPresent(By.cssSelector("input[name='selected[]']"))) {
       create(group);
     }
+  }
+
+  public int idSelectedGroup(int index){
+    manager.getNavigatorH().gotoGroupPage();
+    return Integer.parseInt(
+            driver.findElement(By.xpath("(//input[@name='selected[]'])[" + (index + 1) + "]"))
+                    .getAttribute("value"));
   }
 
   public int countGroups() {
@@ -87,4 +107,17 @@ public class GroupHelper extends HelperBase{
     }
     return groups;
   }
+
+  public Set<GroupData> getGroupSet() {
+    manager.getNavigatorH().gotoGroupPage();
+    Set<GroupData> groups = new HashSet<GroupData>();
+    List<WebElement> elements = driver.findElements(By.className("group"));
+    for(WebElement item : elements){
+      int id = Integer.parseInt(item.findElement(By.tagName("input")).getAttribute("value"));
+      groups.add(new GroupData().setId(id).setName(item.getText()));
+    }
+    return groups;
+  }
+
+
 }

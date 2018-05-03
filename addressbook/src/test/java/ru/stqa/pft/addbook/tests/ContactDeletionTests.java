@@ -1,34 +1,32 @@
 package ru.stqa.pft.addbook.tests;
 
-import org.testng.Assert;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.testng.annotations.Test;
+import ru.stqa.pft.addbook.model.ContSet;
 import ru.stqa.pft.addbook.model.ContactData;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class ContactDeletionTests extends TestBaseAuth {
 
   @Test
   public void testContactModification(){
-    ContactData contact = new ContactData("ppp", "uuu", "z");
+    ContactData contact = new ContactData().setLastName("uuu").setFirstName("iii").setNewGroup("z");
     int index =0;
 
     app.getContactH().checkOneContactExists(contact, true);
 
     int beforeCount = app.getContactH().countContact();
-    List<ContactData> before = app.getContactH().getContactList();
-    app.getContactH().remove(index);
+    ContSet before = app.getContactH().getContactSetList();
+
+    ContactData deletedContact = before.iterator().next();
+
+    app.getContactH().remove(deletedContact);
 
     int afterCount = app.getContactH().countContact();
-    List<ContactData> after = app.getContactH().getContactList();
+    ContSet after = app.getContactH().getContactSetList();
 
-    Assert.assertEquals(afterCount, beforeCount-1);
-
-    before.remove(index);
-
-    Assert.assertEquals(before, after);
+    MatcherAssert.assertThat(afterCount, CoreMatchers.equalTo(beforeCount-1));
+    MatcherAssert.assertThat(after, CoreMatchers.equalTo(before.without(deletedContact)));
 
   }
 }

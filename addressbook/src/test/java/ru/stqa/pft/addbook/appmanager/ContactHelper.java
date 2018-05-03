@@ -4,10 +4,13 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
+import ru.stqa.pft.addbook.model.ContSet;
 import ru.stqa.pft.addbook.model.ContactData;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ContactHelper extends HelperBase {
 
@@ -21,24 +24,33 @@ public class ContactHelper extends HelperBase {
     returnHomePage();
   }
 
-  public void modify(ContactData contact, int index, boolean creation){
+  public void modify(ContactData contact, ContactData modifiedContact, boolean creation){
     manager.getNavigatorH().gotoHomePage();
-    selectContactItem(index);
-    editContactItem(index);
+    selectContactIdItem(modifiedContact.getId());
+    editContactIdItem(modifiedContact.getId());
     fillContactFields(contact, creation);
     updateContactData();
     returnHomePage();
   }
 
-  public void remove(int index){
+  public void remove(ContactData contact) {
     manager.getNavigatorH().gotoHomePage();
-    selectContactItem(index);
+    selectContactIdItem(contact.getId());
     deleteContactItem();
     manager.getNavigatorH().gotoHomePage();
   }
 
-
-
+  public ContSet getContactSetList() {
+    ContSet contacts = new ContSet();
+    List<WebElement> elements = driver.findElements(By.name("entry"));
+    for (WebElement item : elements) {
+      String lastName = item.findElement(By.xpath("./td[2]")).getText();
+      String firstName = item.findElement(By.xpath("./td[3]")).getText();
+      int id = Integer.parseInt(item.findElement(By.tagName("input")).getAttribute("value"));
+      contacts.add(new ContactData(id, lastName, firstName ));
+    }
+    return contacts;
+  }
 
   public void fillContactFields(ContactData contactData, boolean creation) {
     type(By.cssSelector("input[name='lastname']"), contactData.getLastName());
@@ -65,7 +77,16 @@ public class ContactHelper extends HelperBase {
 
   private void selectContactItem(int index) {click(By.xpath("(//input[@name='selected[]'])[" + (index+1) + "]"));}
 
+  private void selectContactIdItem(int id) {
+    click(By.xpath("//input[@name='selected[]' and @value =" + (id) + "]"));
+  }
+
   private void editContactItem(int index) {click(By.xpath("//tr[@name='entry'][" + (index+1) + "]/td[8]"));}
+
+  private void editContactIdItem(int id) {
+    click(By.xpath("//input[@name='selected[]' and @value =" + (id) + "]/ancestor::tr/td[8]"));
+  }
+
 
   public void checkOneContactExists(ContactData contact, boolean creation) {
     manager.getNavigatorH().gotoHomePage();
@@ -78,15 +99,5 @@ public class ContactHelper extends HelperBase {
     return driver.findElements(By.name("entry")).size();
   }
 
-  public List<ContactData> getContactList() {
-    List<ContactData> contacts = new ArrayList<>();
-    List<WebElement> elements = driver.findElements(By.name("entry"));
-    for (WebElement item : elements) {
-      String lastName = item.findElement(By.xpath("./td[2]")).getText();
-      String firstName = item.findElement(By.xpath("./td[3]")).getText();
-      int id = Integer.parseInt(item.findElement(By.tagName("input")).getAttribute("value"));
-      contacts.add(new ContactData(id, lastName, firstName ));
-    }
-    return contacts;
-  }
+
 }

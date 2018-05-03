@@ -2,7 +2,7 @@ package ru.stqa.pft.addbook.model;
 
 public class ContactData {
 
-  private int id;
+  private int id = Integer.MAX_VALUE;
   private String firstName;
   private String lastName;
   private String address;
@@ -14,6 +14,8 @@ public class ContactData {
   private String email3;
 
   private String newGroup;
+
+  public ContactData(){}
 
   public ContactData(String lastName, String firstName, String newGroup){
     this.lastName = lastName;
@@ -31,76 +33,87 @@ public class ContactData {
   public String getFirstName() {
     return firstName;
   }
-  public void setFirstName(String firstName) {
+  public ContactData setFirstName(String firstName) {
     this.firstName = firstName;
+    return this;
   }
 
   public String getLastName() {
     return lastName;
   }
-  public void setLastName(String lastName) {
+  public ContactData setLastName(String lastName) {
     this.lastName = lastName;
+    return this;
   }
 
   public String getAddress() {
     return address;
   }
-  public void setAddress(String address) {
+  public ContactData setAddress(String address) {
     this.address = address;
+    return this;
   }
 
   public String getHomePhone() {
     return homePhone;
   }
-  public void setHomePhone(String homePhone) {
+  public ContactData setHomePhone(String homePhone) {
     this.homePhone = homePhone;
+    return this;
   }
 
   public String getMobilePhone() {
     return mobilePhone;
   }
-  public void setMobilePhone(String mobilePhone) {
+  public ContactData setMobilePhone(String mobilePhone) {
     this.mobilePhone = mobilePhone;
+    return this;
   }
 
   public String getWorkPhone() {
     return workPhone;
   }
-  public void setWorkPhone(String workPhone) {
+  public ContactData setWorkPhone(String workPhone) {
     this.workPhone = workPhone;
+    return this;
   }
 
   public String getEmail() {
     return email;
   }
-  public void setEmail(String email) {
+  public ContactData setEmail(String email) {
     this.email = email;
+    return this;
   }
 
   public String getEmail2() {
     return email2;
   }
-  public void setEmail2(String email2) {
+  public ContactData setEmail2(String email2) {
     this.email2 = email2;
+    return this;
   }
 
   public String getEmail3() {
     return email3;
   }
-  public void setEmail3(String email3) {
+  public ContactData setEmail3(String email3) {
     this.email3 = email3;
+    return this;
   }
 
   public String getNewGroup() { return newGroup;}
-  public void setNewGroup(String newGroup) {
+  public ContactData setNewGroup(String newGroup) {
     this.newGroup = newGroup;
+    return this;
   }
 
   public int getId() {
     return id;
   }
-  public void setId(int id) {
+  public ContactData setId(int id) {
     this.id = id;
+    return this;
   }
 
 
