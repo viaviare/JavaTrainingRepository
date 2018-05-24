@@ -1,5 +1,7 @@
 package ru.stqa.pft.addbook.model;
 
+import static jdk.nashorn.internal.objects.NativeString.trim;
+
 public class ContactData {
 
   private int id = Integer.MAX_VALUE;
@@ -12,6 +14,9 @@ public class ContactData {
   private String email;
   private String email2;
   private String email3;
+  private String allPhones;
+  private String allEmails;
+
 
   private String newGroup;
 
@@ -102,11 +107,46 @@ public class ContactData {
     return this;
   }
 
+
+
+  public String getAllEmails() {
+    if (allEmails !=null){
+      return allEmails;
+    }
+    allEmails = trim(clearValue(getEmail()) + clearValue(getEmail2()) + clearValue(getEmail3()));
+    return allEmails;
+  }
+
+  public String clearValue(String text) {
+    if (text==null || text.equals("")){
+      return "";
+    }
+    text = text.replaceAll("[-() ]", "");
+    return trim(text) + "\n";
+  }
+
+  public ContactData setAllEmails(String allEmails) {
+    this.allEmails = allEmails;
+    return this;
+  }
+
+  public String getAllPhones() {
+    if (allPhones != null)
+    {return allPhones;}
+    allPhones = trim(clearValue(getHomePhone()) + clearValue(getMobilePhone()) + clearValue(getWorkPhone()));
+    return allPhones;
+  }
+
+  public void setAllPhones(String allPhones) {
+    this.allPhones = allPhones;
+  }
+
   public String getNewGroup() { return newGroup;}
   public ContactData setNewGroup(String newGroup) {
     this.newGroup = newGroup;
     return this;
   }
+
 
   public int getId() {
     return id;
@@ -145,4 +185,5 @@ public class ContactData {
     result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
     return result;
   }
+
 }

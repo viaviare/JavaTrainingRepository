@@ -39,6 +39,47 @@ public class ContactHelper extends HelperBase {
     manager.getNavigatorH().gotoHomePage();
   }
 
+  public ContactData getContDataFromEditPage(int index){
+    editContactItem(index);
+    ContactData contact = new ContactData();
+    contact.setLastName(getTextValue("lastname"))
+            .setFirstName(getTextValue("firstname"))
+            .setAddress(getTextValue("address"))
+            .setHomePhone(getTextValue("home"))
+            .setMobilePhone(getTextValue("mobile"))
+            .setWorkPhone(getTextValue("work"))
+            .setEmail(getTextValue("email"))
+            .setEmail2(getTextValue("email2"))
+            .setEmail3(getTextValue("email3"));
+
+    return contact;
+  }
+
+  private String getTextValue(String name) {
+    return driver.findElement(By.name(name)).getAttribute("value");
+  }
+
+  public ContactData getContDataFromHomePage(int index){
+    manager.getNavigatorH().gotoHomePage();
+    selectContactItem(index);
+    ContactData contact = new ContactData();
+    List<WebElement> infaRow = driver.findElements(By.xpath("//tr[@name='entry'][" + (index+1) + "]/td"));
+    contact.setLastName(infaRow.get(1).getText())
+            .setFirstName(infaRow.get(2).getText())
+            .setAddress(infaRow.get(3).getText())
+            .setAllEmails(infaRow.get(4).getText())
+            .setAllPhones(infaRow.get(5).getText());
+
+    return contact;
+  }
+
+  public ContactData getContDataFromViewPage(){
+    ContactData contact = new ContactData();
+    return contact;
+  }
+
+
+
   private ContSet contSetCache;
 
   public ContSet getContactSetList() {
@@ -91,12 +132,20 @@ public class ContactHelper extends HelperBase {
     click(By.linkText("home page"));
   }
 
-  private void selectContactIdItem(int id) {
+  public void selectContactIdItem(int id) {
     click(By.xpath(String.format("//input[@name='selected[]' and @value ='%s']", id)));
   }
 
-  private void editContactIdItem(int id) {
+  public void selectContactItem(int index) {
+    click(By.xpath(("//input[@name='selected[]']["+(index+1)+"]")));
+  }
+
+  public void editContactIdItem(int id) {
     click(By.xpath("//input[@name='selected[]' and @value =" + (id) + "]/ancestor::tr/td[8]/a"));
+  }
+
+  public void editContactItem(int index) {
+    click(By.xpath(String.format("//input[@name='selected[]']['%s']/ancestor::tr/td[8]/a", index)));
   }
 
   public void checkOneContactExists(ContactData contact, boolean creation) {
