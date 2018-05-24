@@ -39,7 +39,9 @@ public class ContactHelper extends HelperBase {
     manager.getNavigatorH().gotoHomePage();
   }
 
+
   public ContactData getContDataFromEditPage(int index){
+    manager.getNavigatorH().gotoHomePage();
     editContactItem(index);
     ContactData contact = new ContactData();
     contact.setLastName(getTextValue("lastname"))
@@ -73,8 +75,11 @@ public class ContactHelper extends HelperBase {
     return contact;
   }
 
-  public ContactData getContDataFromViewPage(){
+  public ContactData getContDataFromViewPage(int index){
+    manager.getNavigatorH().gotoHomePage();
+    viewContactItem(index);
     ContactData contact = new ContactData();
+    contact.setAllInfa(driver.findElement(By.cssSelector("div#content")).getText());
     return contact;
   }
 
@@ -146,6 +151,10 @@ public class ContactHelper extends HelperBase {
 
   public void editContactItem(int index) {
     click(By.xpath(String.format("//input[@name='selected[]']['%s']/ancestor::tr/td[8]/a", index)));
+  }
+
+  public void viewContactItem(int index) {
+    click(By.xpath(String.format("//input[@name='selected[]']['%s']/ancestor::tr/td[7]/a", index)));
   }
 
   public void checkOneContactExists(ContactData contact, boolean creation) {

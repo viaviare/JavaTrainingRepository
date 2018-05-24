@@ -1,6 +1,5 @@
 package ru.stqa.pft.addbook.model;
 
-import static jdk.nashorn.internal.objects.NativeString.trim;
 
 public class ContactData {
 
@@ -16,6 +15,7 @@ public class ContactData {
   private String email3;
   private String allPhones;
   private String allEmails;
+  private String allInfa;
 
 
   private String newGroup;
@@ -113,16 +113,8 @@ public class ContactData {
     if (allEmails !=null){
       return allEmails;
     }
-    allEmails = trim(clearValue(getEmail()) + clearValue(getEmail2()) + clearValue(getEmail3()));
+    allEmails = (clearValue(getEmail()) + clearValue(getEmail2()) + clearValue(getEmail3())).trim();
     return allEmails;
-  }
-
-  public String clearValue(String text) {
-    if (text==null || text.equals("")){
-      return "";
-    }
-    text = text.replaceAll("[-() ]", "");
-    return trim(text) + "\n";
   }
 
   public ContactData setAllEmails(String allEmails) {
@@ -130,15 +122,64 @@ public class ContactData {
     return this;
   }
 
+  public String clearValue(String text) {
+    if (text==null || text.equals("")){
+      return "";
+    }
+    return text.trim() + "\n";
+  }
+
+  public String clearPhone(String text){
+    return clearValue(text.replaceAll("[-() ]", ""));
+  }
+
+  public String addPhones(){
+    String string = "";
+    String home = clearValue(getHomePhone());
+    String mobile = clearValue(getMobilePhone());
+    String work = clearValue(getWorkPhone());
+    if (!home.equals("")){
+      if(home.trim().length()>0){
+        string = string + "H: " + home;
+      }
+      else{string = string + "H:" + "\n";}
+    }
+    if (!mobile.equals("")){
+      if(mobile.trim().length()>0){
+        string = string + "M: " + mobile;
+      }
+      else{string = string + "M:" + "\n";}
+    }
+    if (!work.equals("")){
+      if(work.trim().length()>0){
+        string = string + "W: " + work;
+      }
+      else{string = string + "W:" + "\n";}
+    }
+    return string;
+  }
+
   public String getAllPhones() {
     if (allPhones != null)
     {return allPhones;}
-    allPhones = trim(clearValue(getHomePhone()) + clearValue(getMobilePhone()) + clearValue(getWorkPhone()));
-    return allPhones;
+    allPhones = clearPhone(getHomePhone()) + clearPhone(getMobilePhone()) + clearPhone(getWorkPhone());
+    return allPhones.trim();
   }
 
   public void setAllPhones(String allPhones) {
     this.allPhones = allPhones;
+  }
+
+  public String getAllInfa() {
+    if(allInfa!=null){
+      return allInfa;
+    }
+    return (firstName.trim() + " " + lastName.trim() + "\n" + address.trim() + "\n\n" +
+            addPhones().trim() + "\n\n" + getAllEmails()).trim();
+  }
+
+  public void setAllInfa(String allInfa) {
+    this.allInfa = allInfa;
   }
 
   public String getNewGroup() { return newGroup;}
@@ -185,5 +226,6 @@ public class ContactData {
     result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
     return result;
   }
+
 
 }

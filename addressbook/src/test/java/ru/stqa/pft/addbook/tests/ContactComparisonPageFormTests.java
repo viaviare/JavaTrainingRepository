@@ -14,10 +14,10 @@ public class ContactComparisonPageFormTests extends TestBaseAuth{
     ContactData dataHomePage = app.getContactH().getContDataFromHomePage(index);
     ContactData dataEditPage = app.getContactH().getContDataFromEditPage(index);
 
-    assertThat(dataHomePage, equalTo(dataEditPage));
-    assertThat(dataHomePage.getAddress(), equalTo(dataEditPage.getAddress()));
-    assertThat(dataHomePage.getAllEmails(), equalTo(dataEditPage.getAllEmails()));
-    assertThat(dataHomePage.getAllPhones(), equalTo(dataEditPage.getAllPhones()));
+    assertThat(dataEditPage, equalTo(dataHomePage));
+    assertThat(dataEditPage.getAddress(), equalTo(dataHomePage.getAddress()));
+    assertThat(dataEditPage.getAllEmails(), equalTo(dataHomePage.getAllEmails()));
+    assertThat(dataEditPage.getAllPhones(), equalTo(dataHomePage.getAllPhones()));
   }
 
 }
