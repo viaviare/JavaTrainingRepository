@@ -2,14 +2,19 @@ package ru.stqa.pft.addbook.appmanager;
 
 import org.openqa.selenium.*;
 
+import java.util.Properties;
+
 public class HelperBase {
 
   protected ApplicationManager manager;
   protected WebDriver driver;
+  protected Properties properties;
+
 
   public HelperBase(ApplicationManager manager){
     this.manager  = manager;
     this.driver = manager.getDriver();
+    this.properties = manager.getProperties();
   }
 
   public void type(By locator, String text){

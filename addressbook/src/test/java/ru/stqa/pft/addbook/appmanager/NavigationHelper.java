@@ -6,13 +6,13 @@ public class NavigationHelper extends HelperBase {
 
   private String baseUrl;
 
-  public NavigationHelper(ApplicationManager manager, String baseUrl){
+  public NavigationHelper(ApplicationManager manager){
     super (manager);
     this.baseUrl = manager.baseUrl;
   };
 
   public void openStartPage() {
-    driver.navigate().to(baseUrl + "");
+    driver.navigate().to(baseUrl);
   }
 
 
@@ -24,7 +24,7 @@ public class NavigationHelper extends HelperBase {
   }
 
   public void gotoGroupPage() {
-    if (driver.getCurrentUrl().equals(baseUrl + "/group.php") &&
+    if (driver.getCurrentUrl().equals(baseUrl + properties.getProperty("web.groupPage")) &&
             isElementPresent(By.cssSelector("input[name='new']"))){
       return;
     }
