@@ -1,5 +1,7 @@
 package ru.stqa.pft.addbook.generators;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
@@ -16,12 +18,26 @@ import java.util.Random;
 
 public class DataGenerator {
 
+  @Parameter(names = "-c", description="count items of list")
+  public int count;
+  @Parameter(names = "-f", description = "target file")
+  public String file;
+  @Parameter(names = "-t", description = "type of file: csv xml json")
+  public String type;
+  @Parameter(names = "-m", description = "model class: group or contact")
+  public String model;
+
+
   public static void main(String[] args) throws IOException {
 
-    int count = Integer.parseInt(args[0]);
-    File file = new File(args[1]);
-    String type = args[2];
-    String model = args[3];
+    DataGenerator generator = new DataGenerator();
+    new JCommander().newBuilder().addObject(generator).build().parse(args);
+
+    generator.run();
+
+  }
+
+  private void run() throws IOException {
 
     List<GroupData> groups = new ArrayList<>();
     List<ContactData> conts = new ArrayList<>();
@@ -37,28 +53,28 @@ public class DataGenerator {
 
     if (type.equals("csv")) {
       if (model.equals("group")) {
-        writeGroupDataToCsv(groups, file);
+        writeGroupDataToCsv(groups, new File(file));
       } else {
-        writeContactDataToCsv(conts, file);
+        writeContactDataToCsv(conts, new File(file));
       }
     } else if (type.equals("xml")) {
       if (model.equals("group")) {
-        writeGroupDataToXml(groups, file);
+        writeGroupDataToXml(groups, new File(file));
       } else {
-        writeContactDataToXml(conts, file);
+        writeContactDataToXml(conts, new File(file));
       }
     } else if (type.equals("json")) {
       if (model.equals("group")) {
-        writeGroupDataToJson(groups, file);
+        writeGroupDataToJson(groups, new File(file));
       } else {
-        writeContactDataToJson(conts, file);
+        writeContactDataToJson(conts, new File(file));
       }
     } else {
       System.out.print("unknown type of file");
     }
   }
 
-  private static void writeGroupDataToJson(List<GroupData> groups, File file) throws IOException {
+  private void writeGroupDataToJson(List<GroupData> groups, File file) throws IOException {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
     String json = gson.toJson(groups);
     try (Writer writer = new FileWriter(file)) {
@@ -66,7 +82,7 @@ public class DataGenerator {
     }
   }
 
-  private static void writeContactDataToJson(List<ContactData> conts, File file) throws IOException {
+  private void writeContactDataToJson(List<ContactData> conts, File file) throws IOException {
     Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
     String json = gson.toJson(conts);
     try (Writer writer = new FileWriter(file)) {
@@ -74,7 +90,7 @@ public class DataGenerator {
     }
   }
 
-  private static void writeGroupDataToXml(List<GroupData> groups, File file) throws IOException {
+  private void writeGroupDataToXml(List<GroupData> groups, File file) throws IOException {
     XStream xstream = new XStream();
 
     xstream.alias("groups", GroupData.class);
@@ -87,7 +103,7 @@ public class DataGenerator {
     }
   }
 
-  private static void writeContactDataToXml(List<ContactData> conts, File file) throws IOException {
+  private void writeContactDataToXml(List<ContactData> conts, File file) throws IOException {
     XStream xstream = new XStream();
     xstream.processAnnotations(ContactData.class);
     String xml = xstream.toXML(conts);
@@ -96,7 +112,7 @@ public class DataGenerator {
     }
   }
 
-  private static void writeGroupDataToCsv(List<GroupData> groups, File file) throws IOException {
+  private void writeGroupDataToCsv(List<GroupData> groups, File file) throws IOException {
     try(Writer writer = new FileWriter(file);){
       for (GroupData item : groups) {
         writer.write(String.format("%s, %s, %s\n", item.getName(), item.getHeader(), item.getFooter()));
@@ -104,7 +120,7 @@ public class DataGenerator {
     }
   }
 
-  private static void writeContactDataToCsv(List<ContactData> conts, File file) throws IOException {
+  private void writeContactDataToCsv(List<ContactData> conts, File file) throws IOException {
     try(Writer writer = new FileWriter(file);) {
       for (ContactData item : conts) {
         writer.write(String.format("%s, %s, %s\n", item.getLastName(), item.getFirstName(), "z"));
@@ -113,7 +129,7 @@ public class DataGenerator {
   }
 
 
-  private static List<ContactData> getRandomContactProvider(int count) {
+  private List<ContactData> getRandomContactProvider(int count) {
     List<ContactData> conts = new ArrayList<ContactData>();
     for (int i = 0; i < count; i++) {
       conts.add(new ContactData(
@@ -124,7 +140,7 @@ public class DataGenerator {
     return conts;
   }
 
-  private static List<GroupData> getRandomGroupProvider(int count) {
+  private List<GroupData> getRandomGroupProvider(int count) {
     List<GroupData> groups = new ArrayList<GroupData>();
     for (int i = 0; i < count; i++) {
       groups.add(new GroupData(
@@ -137,7 +153,7 @@ public class DataGenerator {
 
   public static Random rnd = new Random();
 
-  private static String getRandomString(int max) {
+  private String getRandomString(int max) {
     int l = (int) (rnd.nextDouble() * max);
     StringBuilder builder = new StringBuilder();
     for (int i = 0; i < l; i++) {
