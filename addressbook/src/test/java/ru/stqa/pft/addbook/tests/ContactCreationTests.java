@@ -3,15 +3,6 @@ package ru.stqa.pft.addbook.tests;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.thoughtworks.xstream.XStream;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.stqa.pft.addbook.model.ContSet;
@@ -26,9 +17,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ContactCreationTests extends TestBaseAuth {
 
-
-  @Test(dataProvider = "readContactDataFromExcel")
+  @Test(dataProvider = "readContactDataFromJson")
   public void testContactCreation(ContactData contact) {
+
 
     ContSet before = app.getContactH().getContactSetList();
 
@@ -41,23 +32,6 @@ public class ContactCreationTests extends TestBaseAuth {
 
     assertThat(after, equalTo(before.withAdded(contact.setId
             (after.stream().max(Comparator.comparingInt(ContactData::getId)).get().getId()))));
-  }
-
-  @DataProvider
-  public static Iterator<Object[]> readContactDataFromExcel() throws IOException {
-    List<Object[]> list = new ArrayList<Object[]>();
-    HSSFWorkbook book = new HSSFWorkbook(new FileInputStream("src/test/resources/contacts.xls"));
-    HSSFSheet sheet = book.getSheetAt(0);
-    int rows = sheet.getPhysicalNumberOfRows();
-    for (int i = 0; i < rows; i++) {
-      HSSFRow row = sheet.getRow(i);
-      list.add(new Object[]{new ContactData(
-              row.getCell(0).getStringCellValue(),
-              row.getCell(1).getStringCellValue(),
-              row.getCell(2).getStringCellValue())});
-    }
-    book.close();
-    return list.iterator();
   }
 
 
@@ -73,7 +47,7 @@ public class ContactCreationTests extends TestBaseAuth {
     return list.iterator();
   }
 
-  @DataProvider
+
   public static Iterator<Object[]> readContactDataFromXml() throws IOException {
     try (BufferedReader reader = new BufferedReader(new FileReader(new File("src/test/resources/contacts.xml")));) {
       String xml = reader.lines().collect(Collectors.joining());
@@ -84,7 +58,7 @@ public class ContactCreationTests extends TestBaseAuth {
     }
   }
 
-
+  @DataProvider
   public static Iterator<Object[]> readContactDataFromJson() throws FileNotFoundException {
     BufferedReader reader = new BufferedReader(new FileReader(new File("src/test/resources/contacts.json")));
     String json = reader.lines().collect(Collectors.joining());
