@@ -5,13 +5,15 @@ import com.beust.jcommander.Parameter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import ru.stqa.pft.addbook.model.ContactData;
 import ru.stqa.pft.addbook.model.GroupData;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -51,7 +53,13 @@ public class DataGenerator {
       System.out.print("unknown model class");
     }
 
-    if (type.equals("csv")) {
+    if (type.equals("excel")) {
+      if (model.equals("group")) {
+        writeGroupDataToExcel(groups, new File(file));
+      } else {
+        writeContactDataToExcel(conts, new File(file));
+      }
+    }else if (type.equals("csv")) {
       if (model.equals("group")) {
         writeGroupDataToCsv(groups, new File(file));
       } else {
@@ -72,6 +80,43 @@ public class DataGenerator {
     } else {
       System.out.print("unknown type of file");
     }
+  }
+
+
+  private void writeGroupDataToExcel(List<GroupData> groups, File file) throws IOException {
+    Workbook book = new HSSFWorkbook();
+    Sheet sheet = book.createSheet();
+    int i = 0;
+    for (GroupData item: groups){
+      Row row = sheet.createRow(i);
+      Cell cell = row.createCell(0);
+      cell.setCellValue(item.getName());
+      Cell cellS = row.createCell(1);
+      cellS.setCellValue(item.getHeader());
+      Cell cellT = row.createCell(2);
+      cellT.setCellValue(item.getFooter());
+      i++;
+    }
+    book.write(new FileOutputStream(file));
+    book.close();
+  }
+
+  private void writeContactDataToExcel(List<ContactData> conts, File file) throws IOException {
+    Workbook book = new HSSFWorkbook();
+    Sheet sheet = book.createSheet();
+    int i = 0;
+    for (ContactData item: conts){
+      Row row = sheet.createRow(i);
+      Cell cell = row.createCell(0);
+      cell.setCellValue(item.getLastName());
+      Cell cellS = row.createCell(1);
+      cellS.setCellValue(item.getFirstName());
+      Cell cellT = row.createCell(2);
+      cellT.setCellValue(item.getNewGroup());
+      i++;
+    }
+    book.write(new FileOutputStream(file));
+    book.close();
   }
 
   private void writeGroupDataToJson(List<GroupData> groups, File file) throws IOException {
