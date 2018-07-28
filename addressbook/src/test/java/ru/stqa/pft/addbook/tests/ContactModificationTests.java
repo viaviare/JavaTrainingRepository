@@ -30,6 +30,8 @@ public class ContactModificationTests extends TestBaseAuth {
     assertThat(after.size(), equalTo(before.size()));
 
     assertThat(after, equalTo(before.change(modifiedContact, contact.setId(modifiedContact.getId()))));
+
+    verifyContactListInUI();
   }
 
 }

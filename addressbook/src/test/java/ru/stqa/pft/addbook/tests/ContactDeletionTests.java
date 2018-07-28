@@ -31,5 +31,7 @@ public class ContactDeletionTests extends TestBaseAuth {
 
     assertThat(after, equalTo(before.without(deletedContact)));
 
+    verifyContactListInUI();
+
   }
 }
