@@ -3,6 +3,7 @@ package ru.stqa.pft.addbook.appmanager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import ru.stqa.pft.addbook.model.GroupData;
+import ru.stqa.pft.addbook.model.GroupSet;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,9 +22,9 @@ public class GroupHelper extends HelperBase{
     returnToGroupPage();
   }
 
-  public void modify(GroupData group, int index) {
+  public void modify(GroupData group) {
     manager.getNavigatorH().gotoGroupPage();
-    selectGroupItem(index);
+    selectGroupItem(group.getId());
     editGroupItem();
     fillGroupFields(group);
     updateGroupData();
@@ -65,8 +66,8 @@ public class GroupHelper extends HelperBase{
 
 
 
-  public void selectGroupItem(int index) {
-    click(By.xpath("(//input[@name='selected[]'])[" + (index + 1) + "]"));
+  public void selectGroupItem(int id) {
+    click(By.xpath("//input[@name='selected[]' and @value = '" + id + "']"));
   }
 
   public void selectGroupIdItem(int id) {

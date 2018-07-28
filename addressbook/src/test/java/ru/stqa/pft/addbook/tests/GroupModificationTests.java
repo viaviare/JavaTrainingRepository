@@ -1,6 +1,7 @@
 package ru.stqa.pft.addbook.tests;
 
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.stqa.pft.addbook.model.GroupData;
 
@@ -12,24 +13,25 @@ import java.util.function.ToIntFunction;
 
 public class GroupModificationTests extends TestBaseAuth {
 
+
   @Test
   public void testModificationGroup(){
 
-    GroupData group = new GroupData().setName("change");
-    int index = 0;
-
-    app.getGroupH().checkOneGroupExists(group);
+    GroupData tempGroup = new GroupData().setName("t");
+    app.getGroupH().checkOneGroupExists(tempGroup);
 
     List<GroupData> before = app.getGroupH().getGroupList();
-    app.getGroupH().modify(group, index);
+    int id = before.stream().mapToInt(GroupData::getId).max().getAsInt();
+    GroupData group = new GroupData().setName("change").setId(id);
+    app.getGroupH().modify(group);
     List<GroupData> after = app.getGroupH().getGroupList();
 
+    //before.remove(before.indexOf(group));
+   // before.add(group);
 
-    int id = after.stream().mapToInt(GroupData::getId).max().getAsInt();
-    group.setId(id);
-    before.remove(index);
-    before.add(group);
+    before.set(before.indexOf(group), group);
 
+    System.out.print("before " +  before.size() + " after " + after.size());
 
     before.sort(Comparator.comparingInt(GroupData::getId));
     after.sort(Comparator.comparingInt(GroupData::getId));
