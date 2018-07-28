@@ -18,7 +18,7 @@ public class ContactDeletionTests extends TestBaseAuth {
 
     app.getContactH().checkOneContactExists(contact, true);
 
-    ContSet before = app.getContactH().getContactSetList();
+    ContSet before = app.getDbH().contacts();
 
     ContactData deletedContact = before.iterator().next();
 
@@ -27,7 +27,7 @@ public class ContactDeletionTests extends TestBaseAuth {
     int afterCount = app.getContactH().countContact();
     assertThat(afterCount, equalTo(before.size()-1));
 
-    ContSet after = app.getContactH().getContactSetList();
+    ContSet after = app.getDbH().contacts();
 
     assertThat(after, equalTo(before.without(deletedContact)));
 

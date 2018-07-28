@@ -158,10 +158,9 @@ public class ContactHelper extends HelperBase {
   }
 
   public void checkOneContactExists(ContactData contact, boolean creation) {
-    manager.getNavigatorH().gotoHomePage();
-    if (!isElementPresent(By.cssSelector("input[name='selected[]']"))) {
+    if(manager.getDbH().contacts().size() == 0)
+      manager.getNavigatorH().gotoHomePage();
       create(contact, true);
-    }
   }
 
   public int countContact() {
