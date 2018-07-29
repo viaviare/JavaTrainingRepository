@@ -19,6 +19,7 @@ public class ApplicationManager {
   protected String baseUrl;
   private String browser;
   private Properties properties;
+  private RegistrationHelper registH;
 
 
   public ApplicationManager(String browser) {
@@ -27,32 +28,15 @@ public class ApplicationManager {
   }
 
   public void init() throws IOException {
-
-
-    if (browser.equals(org.openqa.selenium.remote.BrowserType.FIREFOX)) {
-      driver = new FirefoxDriver();
-    } else if (browser.equals(org.openqa.selenium.remote.BrowserType.IE)) {
-      driver = new InternetExplorerDriver();
-    } else {
-      driver = new ChromeDriver();
-    }
-
     String target = System.getProperty("target", "local");
     properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
-
-    baseUrl = properties.getProperty("web.baseUrl");
-
-
-    driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-
-    navigatorH = new NavigationHelper(this);
-    loginH = new LoginHelper(this);
   }
 
   public void stop() {
-    driver.quit();
+    if (driver != null){
+      driver.quit();
+    }
   }
-
 
   public NavigationHelper getNavigatorH() {
     return navigatorH;
@@ -60,10 +44,6 @@ public class ApplicationManager {
 
   public LoginHelper getLoginH() {
     return loginH;
-  }
-
-  public WebDriver getDriver() {
-    return driver;
   }
 
   public Properties getProperties() {
@@ -76,5 +56,30 @@ public class ApplicationManager {
 
   public String getProperty(String key){
     return properties.getProperty(key);
+  }
+
+  public WebDriver getDriver() {
+    if (driver == null) {
+      if (browser.equals(org.openqa.selenium.remote.BrowserType.FIREFOX)) {
+        driver = new FirefoxDriver();
+      } else if (browser.equals(org.openqa.selenium.remote.BrowserType.IE)) {
+        driver = new InternetExplorerDriver();
+      } else {
+        driver = new ChromeDriver();
+      }
+      baseUrl = properties.getProperty("web.baseUrl");
+      driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+
+      navigatorH = new NavigationHelper(this);
+      loginH = new LoginHelper(this);
+    }
+    return driver;
+  }
+
+  public RegistrationHelper registration () {
+    if(registH == null){
+      registH = new RegistrationHelper(this);
+    }
+    return registH;
   }
 }
