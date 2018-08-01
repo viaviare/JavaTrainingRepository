@@ -14,7 +14,6 @@ public class TestBaseAuth extends  TestBase {
   @AfterSuite (alwaysRun = true)
   public void stop(){
     app.getLoginH().logout();
-    app.stop();
   }
 
 }

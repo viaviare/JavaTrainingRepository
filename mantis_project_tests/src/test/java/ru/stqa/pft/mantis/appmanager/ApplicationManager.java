@@ -20,6 +20,7 @@ public class ApplicationManager {
   private String browser;
   private Properties properties;
   private RegistrationHelper registH;
+  private FtpHelper ftp;
 
 
   public ApplicationManager(String browser) {
@@ -81,5 +82,12 @@ public class ApplicationManager {
       registH = new RegistrationHelper(this);
     }
     return registH;
+  }
+
+  public FtpHelper ftp() {
+    if (ftp == null) {
+      ftp = new FtpHelper(this);
+    }
+    return ftp;
   }
 }
