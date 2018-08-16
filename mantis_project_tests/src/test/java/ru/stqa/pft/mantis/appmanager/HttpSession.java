@@ -35,7 +35,7 @@ public class HttpSession {
     CloseableHttpResponse response = httpclient.execute(post);
     String body = getTextFrom(response);
     System.out.println("THIS IS BODY\n" + body + "\nTHIS IS THE END OF BODY");
-    return body.contains(String.format("<span class=\"label hidden-xs label-default arrowed\">%s</span>", username));
+    return body.contains(String.format("<a href=\"/mantisbt-2.12.0/account_page.php\">%s</a>", username));
   }
 
   private String getTextFrom(CloseableHttpResponse response) throws IOException {
